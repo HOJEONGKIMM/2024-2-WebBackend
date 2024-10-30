@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Finder</title>
+  <link rel="stylesheet" href="/RecipeFinder/public/style.css">
+</head>
+<body>
+  <h1>Write Your Ingredients</h1>
+  <p>Enter the ingredients you have, and we'll find matching recipes for you!</p>
+  
+  <form id="ingredientForm">
+    <input type="text" id="ingredients" placeholder="Enter ingredients (e.g., tomato, onion)" required>
+    <button type="submit">Find Recipes</button>
+  </form>
+
+  <div id="result">
+    <h2>Recipes</h2>
+    <ul id="recipeList"></ul>
+  </div>
+
+  <script src="/RecipeFinder/public/script.js"></script>
+</body>
+</html>

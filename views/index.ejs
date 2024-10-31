@@ -25,14 +25,24 @@
           <% recipes.forEach(recipe => { %>
             <li>
               <strong><%= recipe.name %></strong> - <%= recipe.calories %> kcal<br>
-              <em>필요한 재료</em> <%= recipe.ingredients.join(', ') %><br>
-              <em>레시피</em> <%= recipe.instructions %>
+              <h3>필요한 재료</h3>
+              <p><%= recipe.ingredients.join(', ') %></p>
+              <h3>레시피</h3>
+              <ul>
+                <% if (Array.isArray(recipe.instructions)) { %>
+                  <% recipe.instructions.forEach(instruction => { %>
+                    <li><%= instruction %></li>
+                  <% }) %>
+                <% } else { %>
+                  <li><%= recipe.instructions %></li>
+                <% } %>
+              </ul>
             </li>
           <% }) %>
-        <% } else if (recipes) { %>
+        <% } else { %>
           <li>No matching recipes found.</li>
         <% } %>
-      </ul>
+      </ul>          
     </div>
   </div>
 </body>

@@ -1,0 +1,18 @@
+{
+  "name": "2024-2-webbackend",
+  "version": "1.0.0",
+  "description": "2024년 2학기 웹 백엔드",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "mongodb": "^6.10.0"
+  }
+}

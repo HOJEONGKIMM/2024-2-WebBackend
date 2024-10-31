@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Finder</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- 헤더 추가 -->
+  <header>
+    <div class="header-container">
+      <h1>Recipe Finder</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/">About</a></li>
+          <li><a href="/">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="form-container">
+      <h1>Write Your Ingredients</h1>
+      <p>Enter the ingredients you have, and we'll find matching recipes for you!</p>
+
+      <form action="/search" method="POST">
+        <input type="text" name="ingredients" placeholder="Enter ingredients (e.g., tomato, onion)" required>
+        <button type="submit">Find Recipes</button>
+      </form>
+    </div>
+
+    <div class="result-container">
+      <h2>Recipes</h2>
+      <ul>
+        <% if (recipes && recipes.length > 0) { %>
+          <% recipes.forEach(recipe => { %>
+            <li>
+              <strong><%= recipe.name %></strong> - <%= recipe.calories %> kcal<br>
+              <h3>필요한 재료</h3>
+              <p><%= recipe.ingredients.join(', ') %></p>
+              <h3>레시피</h3>
+              <ul>
+                <% if (Array.isArray(recipe.instructions)) { %>
+                  <% recipe.instructions.forEach(instruction => { %>
+                    <li><%= instruction %></li>
+                  <% }) %>
+                <% } else { %>
+                  <li><%= recipe.instructions %></li>
+                <% } %>
+              </ul>
+            </li>
+          <% }) %>
+        <% } else { %>
+          <li>No matching recipes found.</li>
+        <% } %>
+      </ul>          
+    </div>
+  </div>
+</body>
+</html>

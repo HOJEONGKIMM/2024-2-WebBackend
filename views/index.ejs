@@ -72,6 +72,7 @@
       document.getElementById('recipeTitle').innerText = recipe.name;
       document.getElementById('recipeCalories').innerText = recipe.calories + ' kcal';
       document.getElementById('recipeIngredients').innerText = recipe.ingredients.join(', ');
+      //탄단지 추가 
       document.getElementById('recipeMacronutrients').innerText = 
       `탄수화물: ${recipe.carbohydrate}g
        지방: ${recipe.fat}g
@@ -96,6 +97,7 @@
         instructionsContainer.appendChild(li);
       });
       
+      //탄단지 파이그래프
       const ctx = document.getElementById('MacroNutrientsChart').getContext('2d');
       const MacroNutrientsChart = new Chart(ctx, {
         type: 'pie',

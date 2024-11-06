@@ -72,23 +72,26 @@
       document.getElementById('recipeTitle').innerText = recipe.name;
       document.getElementById('recipeCalories').innerText = recipe.calories + ' kcal';
       document.getElementById('recipeIngredients').innerText = recipe.ingredients.join(', ');
-      //탄단지 추가 
-      document.getElementById('recipeMacronutrients').innerText = 
-      `탄수화물: ${recipe.carbohydrate}g
-       지방: ${recipe.fat}g
-       단백질: ${recipe.protein}g`;
+      
+      // Clear existing instructions
+      const instructionsContainer = document.getElementById('recipeInstructions');
+      const macronutrientsContainer = document.getElementById('recipeMacronutrients');
+      instructionsContainer.innerHTML = '';
+      macronutrientsContainer.innerHTML = '';
+
+      document.getElementById("recipeMacronutrients").innerHTML = `
+      <ul style="list-style-type: disc; margin: 0; padding-left: 20px;">
+          <li>탄수화물: ${recipe.carbohydrate}g</li>
+          <li>단백질: ${recipe.protein}g</li>
+          <li>지방: ${recipe.fat}g</li>
+      </ul>
+      `;
 
       // 기존 차트가 있다면 제거
       const existingChart = Chart.getChart('MacroNutrientsChart');
       if (existingChart) {
         existingChart.destroy();
       };
-
-      // Clear existing instructions
-      const instructionsContainer = document.getElementById('recipeInstructions');
-      const macronutrientsContainer = document.getElementById('recipeMacronutrients');
-      instructionsContainer.innerHTML = '';
-      macronutrientsContainer.innerHTML = '';
 
       // Add each instruction as a list item
       recipe.instructions.forEach(instruction => {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -204,5 +204,118 @@
       }
     });
   </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>레시피 파인더</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .left-column {
+      flex: 1;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-right: 1px solid #ddd;
+    }
+    .center-column {
+      flex: 2;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .right-column {
+      flex: 1;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-left: 1px solid #ddd;
+      display: none;
+      overflow-y: auto;
+    }
+    .recipe-category {
+      margin-bottom: 20px;
+    }
+    .recipe-category h2 {
+      margin-bottom: 10px;
+    }
+    .recipe-list li {
+      cursor: pointer;
+      margin: 5px 0;
+      padding: 5px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+    }
+    .recipe-list li:hover {
+      background-color: #d1d1d1;
+    }
+    .right-column h2 {
+      margin-top: 0;
+    }
+    .close-btn {
+      background-color: #ff5e5e;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #recipeInstructions {
+      padding-left: 20px;
+    }
+    #recipeInstructions li {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+  </style>
+  <!-- Chart.js 라이브러리 로드 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- 왼쪽 컬럼: 검색 폼 -->
+    <div class="left-column">
+      <h1>레시피 파인더</h1>
+      <form id="ingredientForm">
+        <input 
+          type="text" 
+          id="ingredients" 
+          placeholder="재료를 입력하세요 (예: 토마토, 양파)" 
+          required
+        >
+        <button type="submit">레시피 찾기</button>
+      </form>
+    </div>
+
+    <!-- 가운데 컬럼: 레시피 목록 -->
+    <div class="center-column" id="recipeList">
+      <!-- 레시피 목록이 동적으로 표시됩니다 -->
+    </div>
+
+    <!-- 오른쪽 컬럼: 레시피 상세 정보 -->
+    <div class="right-column">
+      <button class="close-btn" onclick="closeRecipeDetails()">닫기</button>
+      <h2 id="recipeTitle"></h2>
+      <p id="recipeCalories"></p>
+      
+      <h3>재료</h3>
+      <p id="recipeIngredients"></p>
+      
+      <h3>조리 방법</h3>
+      <ul id="recipeInstructions"></ul>
+      
+      <h3>영양소 정보</h3>
+      <p id="recipeMacronutrients"></p>
+      <canvas id="MacroNutrientsChart" width="400" height="400"></canvas>
+    </div>
+  </div>
+  
+  <!-- 메인 스크립트 로드 -->
+  <script src="/js/script.js"></script>
 </body>
 </html>

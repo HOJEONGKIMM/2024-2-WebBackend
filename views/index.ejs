@@ -10,7 +10,7 @@
 </head>
 <body>
     <!-- 네비게이션 바 -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand logo" href="#">
                 <i class="fas fa-book-open"></i>
@@ -19,87 +19,114 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link <%= activePage === 'Recipes' ? 'active' : '' %>" href="/recipes">Recipes</a></li>
-                    <li class="nav-item"><a class="nav-link <%= activePage === 'About Us' ? 'active' : '' %>" href="/about">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link <%= activePage === 'Community' ? 'active' : '' %>" href="/community">Community</a></li>
-                    <li class="nav-item"><a class="nav-link <%= activePage === 'Help' ? 'active' : '' %>" href="/help">Help</a></li>
-                    <li class="nav-item"><a class="nav-link <%= activePage === 'Logout' ? 'active' : '' %>" href="/logout">Log out</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Favorites' ? 'active' : '' %>" href="#" id="view-favorites">Favorites</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="logout-button">Log out</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- 메인 컨텐츠 -->
-    <div class="container main-container">
+    <!-- 회원가입/로그인 섹션 -->
+    <div class="container my-4">
+        <h3>Sign Up / Log In</h3>
         <div class="row">
-            <div class="col-md-4 input-section">
-                <h3>Write Your Ingredients</h3>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="ingredient-input" placeholder="Enter ingredients (띄어쓰기로 구분)" onkeydown="handleKeyInput(event)">
-                    <button class="btn btn-primary" onclick="addIngredients()">Add</button>
-                </div>
-                <div id="ingredient-list" class="d-flex flex-wrap"></div>
-                <button class="btn btn-dark mt-3 w-100" onclick="showResults()">Find Recipes</button>
+            <!-- 회원가입 폼 -->
+            <div class="col-md-6">
+                <h4>Sign Up</h4>
+                <form id="signup-form">
+                    <input type="text" class="form-control mb-2" id="signup-username" placeholder="Username" required>
+                    <input type="password" class="form-control mb-2" id="signup-password" placeholder="Password" required>
+                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                </form>
             </div>
-            
-            <div class="col-md-8">
-                <h3>Recommended Recipes</h3>
-                <ul class="nav nav-tabs" id="recipe-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#" onclick="showCategory('Korean')">한식</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showCategory('Chinese')">중식</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showCategory('Western')">양식</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="showCategory('Japanese')">일식</a>
-                    </li>
-                </ul>
-                <ul id="recipe-list" class="recipe-list mt-3"></ul>
+            <!-- 로그인 폼 -->
+            <div class="col-md-6">
+                <h4>Log In</h4>
+                <form id="login-form">
+                    <input type="text" class="form-control mb-2" id="login-username" placeholder="Username" required>
+                    <input type="password" class="form-control mb-2" id="login-password" placeholder="Password" required>
+                    <button type="submit" class="btn btn-success w-100">Log In</button>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- 모달 창 -->
-    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="modal-name"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <img id="modal-image" src="" alt="" class="img-fluid mb-3">
-            <p> <span id="modal-calories"></span> kcal</p>
-            <p><strong>재료</strong> <br><span id="modal-ingredients"></span></p>
-            <ul id="modal-nutrients"></ul>
-            <p><strong>조리 과정</strong> <br><span id="modal-instructions"></span></p>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-        </div>
-    </div>  
+    <!-- 즐겨찾기 섹션 -->
+    <div class="container my-4" id="favorites-section" style="display: none;">
+        <h3>Your Favorites</h3>
+        <ul id="favorites-list" class="list-group"></ul>
+    </div>
 
-    <!-- 푸터 -->
     <footer>
-        <div class="footer-top footer-links">
-            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">FAQ</a> | <a href="#">Contact</a>
-        </div>
         <div>© 2023 Recipe Finder. All rights reserved.</div>
-        <div class="footer-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/script.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8081';
+        let token = '';
+
+        // 회원가입
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+
+            try {
+                const response = await axios.post(`${API_URL}/signup`, { username, password });
+                alert(response.data.message);
+            } catch (error) {
+                alert(error.response.data.message || 'Sign Up Error');
+            }
+        });
+
+        // 로그인
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await axios.post(`${API_URL}/login`, { username, password });
+                token = response.data.token;
+                alert('Logged in successfully!');
+            } catch (error) {
+                alert(error.response.data.message || 'Log In Error');
+            }
+        });
+
+        // 즐겨찾기 보기
+        document.getElementById('view-favorites').addEventListener('click', async () => {
+            if (!token) {
+                alert('Please log in first.');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${API_URL}/favorites`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const favorites = response.data.favorites;
+                const favoritesList = document.getElementById('favorites-list');
+                favoritesList.innerHTML = '';
+                favorites.forEach(recipe => {
+                    const li = document.createElement('li');
+                    li.textContent = recipe;
+                    li.className = 'list-group-item';
+                    favoritesList.appendChild(li);
+                });
+                document.getElementById('favorites-section').style.display = 'block';
+            } catch (error) {
+                alert(error.response.data.message || 'Error fetching favorites');
+            }
+        });
+
+        // 로그아웃
+        document.getElementById('logout-button').addEventListener('click', () => {
+            token = '';
+            alert('Logged out successfully.');
+            document.getElementById('favorites-section').style.display = 'none';
+        });
+    </script>
 </body>
 </html>

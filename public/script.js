@@ -1,5 +1,6 @@
 let currentCategory = 'Korean'; // 초기 카테고리 설정
 let ingredients = []; // 하나의 전역 배열만 사용
+let token = '';
 
 function activateNav(element) {
     document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
@@ -27,9 +28,8 @@ function addIngredients() {
 
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '×';
-        removeBtn.onclick = function() {
+        removeBtn.onclick = function () {
             list.removeChild(div);
-            // 전역 배열에서 해당 재료 삭제
             ingredients = ingredients.filter(item => item !== ingredient);
         };
 
@@ -49,15 +49,12 @@ function showCategory(category) {
     currentCategory = category;
     document.querySelectorAll('.nav-tabs .nav-link').forEach(link => link.classList.remove('active'));
     document.querySelector(`.nav-tabs .nav-link[onclick="showCategory('${category}')"]`).classList.add('active');
-    fetchRecipes(currentCategory); // 카테고리 변경 시 자동으로 검색 수행
+    fetchRecipes(currentCategory);
 }
 
 async function fetchRecipes(category) {
     const recipeList = document.getElementById('recipe-list');
     recipeList.innerHTML = '';
-
-    console.log("전송되는 재료:", ingredients);
-    console.log("전송되는 카테고리:", category);
 
     try {
         const response = await axios.post('/search', { ingredients, category });
@@ -80,6 +77,7 @@ async function fetchRecipes(category) {
                     <p>${recipe.calories} kcal</p>
                     <p><strong>재료:</strong> ${recipe.ingredients.join(', ')}</p>
                     <button class="btn btn-primary btn-sm" onclick='showModal(${JSON.stringify(recipe)})'>View More</button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="addToFavorites('${recipe._id}')">Add to Favorites</button>
                 </div>
             `;
             recipeList.appendChild(li);
@@ -95,9 +93,9 @@ function showModal(recipe) {
     document.getElementById('modal-calories').innerText = recipe.calories || '정보 없음';
     document.getElementById('modal-ingredients').innerText = recipe.ingredients ? recipe.ingredients.join(', ') : '정보 없음';
 
-        const carbohydrate = recipe.carbohydrate || '?';
-        const protein = recipe.protein || '?';
-        const fat = recipe.fat || '?';
+    const carbohydrate = recipe.carbohydrate || '?';
+    const protein = recipe.protein || '?';
+    const fat = recipe.fat || '?';
 
     document.getElementById('modal-nutrients').innerHTML = `
         <li>탄수화물: ${carbohydrate} g</li>
@@ -107,4 +105,49 @@ function showModal(recipe) {
     document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
 
     new bootstrap.Modal(document.getElementById('recipeModal')).show();
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+        await axios.post('/login', { username, password }); // 서버가 쿠키에 토큰을 설정
+        alert('Logged in successfully!');
+        window.location.href = '/recipes'; // 로그인 후 페이지 이동
+    } catch (error) {
+        alert(error.response?.data?.message || 'Log In Error');
+    }
+});
+
+
+async function fetchFavorites() {
+    try {
+        const response = await axios.get('/favorites');
+        console.log('Favorites:', response.data);
+        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
+    } catch (error) {
+        console.error('Error fetching favorites:', error.response?.data);
+        alert(error.response?.data?.message || 'Error fetching favorites');
+    }
+}
+
+
+async function addToFavorites(recipeId) {
+    try {
+        await axios.post('/favorites', { recipeId });
+        showPopup('Recipe added to favorites!');
+    } catch (error) {
+        showPopup(error.response?.data?.message || 'Error adding to favorites', true);
+    }
+}
+
+function showPopup(message, isError = false) {
+    const popup = document.createElement('div');
+    popup.className = `popup-message ${isError ? 'error' : 'success'}`;
+    popup.innerText = message;
+
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
 }

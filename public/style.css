@@ -31,14 +31,6 @@ body {
   position: relative;
   font-size: 0.9rem;
 }
-.ingredient-card button {
-  background: none;
-  border: none;
-  color: #ff0000;
-  margin-left: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
 .recipe-list {
   list-style-type: none;
   padding: 0;
@@ -61,11 +53,6 @@ body {
   border-radius: 8px;
   margin-right: 5px;
   opacity: 0.5;
-}
-.nav-tabs .nav-link.active {
-  background-color: #0044cc;
-  color: #ffffff;
-  opacity: 1;
 }
 body {
   background-color: #f8f9fa;
@@ -181,11 +168,35 @@ body {
 }
 /* 모달창 */
 #recipeModal .modal-dialog {
-  max-width: 800px; /* 원하는 너비로 설정 */
-  width: 80%; /* 화면 너비의 80%로 설정 */
+  max-width: 800px;
+  width: 80%;
 }
 #modal-instructions {
   line-height: 200%;
+}
+/* 즐겨찾기 스타일 */
+.favorites{
+  position: relative;
+  width: 1200px;
+  height: auto;
+}
+.delete-btn {
+  font-size: 0.9rem; 
+  width: 30px; 
+  height: 30px; 
+  border: none; 
+  border-radius: 5px; 
+  background-color: #dc3545; 
+  color: white; 
+  font-weight: bold; 
+  cursor: pointer; 
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px; 
+  transition: background-color 0.3s, transform 0.2s;
 }
 /* footer 스타일 수정 */
 footer {
@@ -193,9 +204,9 @@ footer {
   color: #ffffff;
   padding: 15px 0;
   text-align: center;
-  margin-top: auto; /* footer를 항상 아래로 밀어줌 */
-  width: 100%; /* 페이지 전체 폭을 차지 */
-  border-top: 1px solid #cccccc; /* 상단에 경계선 추가 (선택사항) */
+  margin-top: auto;
+  width: 100%; 
+  border-top: 1px solid #cccccc;
 }
 
 .footer-links a {

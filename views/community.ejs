@@ -6,6 +6,8 @@
     <title>Community - Recipe Finder</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    
     <style>
         body {
             background-color: #f8f9fa;
@@ -43,7 +45,11 @@
             background-color: #ffffff;
             border-radius: 8px;
         }
-
+        /*모달 창 스타일*/
+        .modal-piegraph{
+            padding: 16px;
+            box-sizing: border-box;
+        }
         /* 메인 컨테이너 스타일 */
         .main-container {
             margin: 20px auto;
@@ -164,34 +170,6 @@
             margin-bottom: 10px;
             font-weight: bold;
         }
-
-        /* 푸터 스타일 */
-        footer {
-            background-color: #0044cc;
-            color: #ffffff;
-            padding: 15px 0;
-            text-align: center;
-            margin-top: auto;
-            width: 100%;
-        }
-
-        .footer-links a {
-            color: #ffffff;
-            margin: 0 10px;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #cccccc;
-        }
-
-        .footer-icons a {
-            color: #ffffff;
-            margin: 0 8px;
-            font-size: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -202,20 +180,18 @@
                 <i class="fas fa-book-open"></i>
                 Recipe Finder
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link ${activePage === 'Recipes' ? 'active' : ''}" href="/recipes">Recipes</a></li>
-                    <li class="nav-item"><a class="nav-link ${activePage === 'About Us' ? 'active' : ''}" href="/about">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link ${activePage === 'Community' ? 'active' : ''}" href="/community">Community</a></li>
-                    <li class="nav-item"><a class="nav-link ${activePage === 'Help' ? 'active' : ''}" href="/favorites">Favorite</a></li>
-                    <li class="nav-item"><a class="nav-link ${activePage === 'Logout' ? 'active' : ''}" href="/logout">Log out</a></li>
-                </ul>
-            </div>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link <%= activePage === 'Recipes' ? 'active' : '' %>" href="/recipes">Recipes</a></li>
+                <li class="nav-item"><a class="nav-link <%= activePage === 'About Us' ? 'active' : '' %>" href="/about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link <%= activePage === 'Community' ? 'active' : '' %>" href="/community">Community</a></li>
+                <li class="nav-item"><a class="nav-link <%= activePage === 'Favorites' ? 'active' : '' %>" href="/favorites">Favorites</a></li>
+                <li class="nav-item"><a class="nav-link <%= activePage === 'Logout' ? 'active' : '' %>" href="/login">Log out</a></li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
     <div class="container mt-4">
         <h1 class="text-center mb-4">레시피 모음집</h1>
         
@@ -287,7 +263,19 @@
             </div>
         </div>
     </div>
-    
+        <!-- 푸터 -->
+    <footer>
+        <div class="footer-top footer-links">
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">FAQ</a> | <a href="#">Contact</a>
+        </div>
+        <div>© 2023 Recipe Finder. All rights reserved.</div>
+        <div class="footer-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
     <script>
         async function deleteRecipe(recipeId, event) {
             event.stopPropagation();

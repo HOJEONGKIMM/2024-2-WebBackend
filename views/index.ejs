@@ -1,209 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Finder</title>
-  <link rel="stylesheet" href="/style.css">
-  <style>
-    .container {
-      display: flex;
-      height: 100vh;
-    }
-    .left-column {
-      flex: 1;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-right: 1px solid #ddd;
-    }
-    .center-column {
-      flex: 2;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    .right-column {
-      flex: 1;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-left: 1px solid #ddd;
-      display: none;
-      overflow-y: auto;
-    }
-    .recipe-category {
-      margin-bottom: 20px;
-    }
-    .recipe-category h2 {
-      margin-bottom: 10px;
-    }
-    .recipe-list li {
-      cursor: pointer;
-      margin: 5px 0;
-      padding: 5px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-    }
-    .recipe-list li:hover {
-      background-color: #d1d1d1;
-    }
-    .right-column h2 {
-      margin-top: 0;
-    }
-    .close-btn {
-      background-color: #ff5e5e;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #recipeInstructions {
-      padding-left: 20px;
-    }
-    #recipeInstructions li {
-      margin: 10px 0;
-      line-height: 1.5;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    function showRecipeDetails(recipe) {
-      const rightColumn = document.querySelector('.right-column');
-      rightColumn.style.display = 'block';
-      document.getElementById('recipeTitle').innerText = recipe.name;
-      document.getElementById('recipeCalories').innerText = recipe.calories + ' kcal';
-      document.getElementById('recipeIngredients').innerText = recipe.ingredients.join(', ');
-      
-      // Clear existing instructions
-      const instructionsContainer = document.getElementById('recipeInstructions');
-      const macronutrientsContainer = document.getElementById('recipeMacronutrients');
-      instructionsContainer.innerHTML = '';
-      macronutrientsContainer.innerHTML = '';
-
-      document.getElementById("recipeMacronutrients").innerHTML = `
-      <ul style="list-style-type: disc; margin: 0; padding-left: 20px;">
-          <li>탄수화물: ${recipe.carbohydrate}g</li>
-          <li>단백질: ${recipe.protein}g</li>
-          <li>지방: ${recipe.fat}g</li>
-      </ul>
-      `;
-
-      // 기존 차트가 있다면 제거
-      const existingChart = Chart.getChart('MacroNutrientsChart');
-      if (existingChart) {
-        existingChart.destroy();
-      };
-
-      // Add each instruction as a list item
-      recipe.instructions.forEach(instruction => {
-        const li = document.createElement('li');
-        li.textContent = instruction;
-        instructionsContainer.appendChild(li);
-      });
-      
-      //탄단지 파이그래프
-      const ctx = document.getElementById('MacroNutrientsChart').getContext('2d');
-      const MacroNutrientsChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['탄수화물', '지방', '단백질'],
-          datasets: [{
-            data: [recipe.carbohydrate, recipe.fat, recipe.protein],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-          },
-          
-        }
-      });
-
-    }
-
-    function closeRecipeDetails() {
-      document.querySelector('.right-column').style.display = 'none';
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="left-column">
-      <h1>Recipe Finder</h1>
-      <form id="ingredientForm">
-        <input type="text" id="ingredients" placeholder="Enter ingredients (e.g., tomato, onion)" required>
-        <button type="submit">Find Recipes</button>
-      </form>
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand logo" href="#">
+                <i class="fas fa-book-open"></i>
+                Recipe Finder
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Recipes' ? 'active' : '' %>" href="/recipes">Recipes</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'About Us' ? 'active' : '' %>" href="/about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Community' ? 'active' : '' %>" href="/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Help' ? 'active' : '' %>" href="/favorites">Favorite</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Logout' ? 'active' : '' %>" href="/login">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="container main-container">
+        <div class="row">
+            <div class="col-md-4 input-section">
+                <h3>Write Your Ingredients</h3>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="ingredient-input" placeholder="Enter ingredients (띄어쓰기로 구분)" onkeydown="handleKeyInput(event)">
+                    <button class="btn btn-primary" onclick="addIngredients()">Add</button>
+                </div>
+                <div id="ingredient-list" class="d-flex flex-wrap"></div>
+                <button class="btn btn-dark mt-3 w-100" onclick="showResults()">Find Recipes</button>
+            </div>
+            
+            <div class="col-md-8">
+                <h3>Recommended Recipes</h3>
+                <ul class="nav nav-tabs" id="recipe-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showCategory('Korean')">한식</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showCategory('Chinese')">중식</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showCategory('Western')">양식</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showCategory('Japanese')">일식</a>
+                    </li>
+                </ul>
+                <ul id="recipe-list" class="recipe-list mt-3"></ul>
+            </div>
+        </div>
     </div>
 
-    <div class="center-column" id="recipeList">
-      <!-- Recipe list will be displayed here dynamically -->
-    </div>
+    <!-- 모달 창 -->
+    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="modal-name"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <img id="modal-image" src="" alt="" class="img-fluid mb-3">
+            <p> <span id="modal-calories"></span> kcal</p>
+            <p><strong>재료</strong> <br><span id="modal-ingredients"></span></p>
+            <ul id="modal-nutrients"></ul>
+            <p><strong>조리 과정</strong> <br><span id="modal-instructions"></span></p>
+            </div>
+            <div class="modal-piegraph">
+                <p><strong>  영양 정보</strong> <br><span id="modal-piegraph"></span></p>
+                <div style="height: 200px;">  <!-- 차트 컨테이너에 높이 지정 -->
+                    <canvas id="MacroNutrientsChart"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"onclick="window.location.href='/recipes'">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>  
 
-    <div class="right-column">
-      <button class="close-btn" onclick="closeRecipeDetails()">Close</button>
-      <h2 id="recipeTitle"></h2>
-      <p id="recipeCalories"></p>
-      <h3>Ingredients</h3>
-      <p id="recipeIngredients"></p>
-      <h3>Instructions</h3>
-      <ul id="recipeInstructions"></ul>
-      <h3>Macro Nutrients</h3>
-      <p id="recipeMacronutrients"></p>
-      <canvas id="MacroNutrientsChart" width="400" height="400"></canvas>
-  </div>
+    <!-- 푸터 -->
+    <footer>
+        <div class="footer-top footer-links">
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">FAQ</a> | <a href="#">Contact</a>
+        </div>
+        <div>© 2023 Recipe Finder. All rights reserved.</div>
+        <div class="footer-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
 
-  <script>
-    document.getElementById('ingredientForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const ingredientInput = document.getElementById('ingredients').value;
-      const ingredients = ingredientInput.split(',').map(item => item.trim());
-      const recipeList = document.getElementById('recipeList');
-      recipeList.innerHTML = '<li>Loading recipes...</li>';
-      
-      try {
-        const response = await fetch('/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ingredients })
-        });
-
-        const data = await response.json();
-        recipeList.innerHTML = '';
-
-        if (data.success && data.recipesByCategory) {
-          Object.keys(data.recipesByCategory).forEach(category => {
-            const recipes = data.recipesByCategory[category];
-            if (recipes.length > 0) {
-              const categoryTitle = document.createElement('h3');
-              categoryTitle.innerText = `${category} Recipes`;
-              recipeList.appendChild(categoryTitle);
-
-              const categoryList = document.createElement('ul');
-              categoryList.classList.add('recipe-list');
-
-              recipes.forEach(recipe => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `<strong>${recipe.name}</strong> - ${recipe.calories} kcal`;
-                listItem.onclick = () => showRecipeDetails(recipe);
-                categoryList.appendChild(listItem);
-              });
-
-              recipeList.appendChild(categoryList);
-            }
-          });
-        } else {
-          recipeList.innerHTML = '<li>No matching recipes found.</li>';
-        }
-      } catch (error) {
-        console.error('Error fetching recipes:', error);
-        recipeList.innerHTML = '<li>Error fetching recipes</li>';
-      }
-    });
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/script.js"></script>
 </body>
-</html> 
-
+</html>

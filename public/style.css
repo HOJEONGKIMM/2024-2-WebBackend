@@ -13,7 +13,7 @@ body {
 .nav-link {
   color: #ffffff !important;
 }
-.main-container {
+.-container {
   margin: 30px auto;
   max-width: 1200px;
   padding: 20px;
@@ -31,6 +31,7 @@ body {
   position: relative;
   font-size: 0.9rem;
 }
+
 .ingredient-card button {
   background: none;
   border: none;
@@ -39,6 +40,7 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
+
 .recipe-list {
   list-style-type: none;
   padding: 0;
@@ -101,7 +103,7 @@ body {
   margin-right: 8px;
   font-size: 1.2rem;
 }
-.navbar .nav-link {
+.navbar .nav-link {ㅁ
   color: #ffffff !important;
   padding: 8px 15px;
   transition: color 0.3s, background-color 0.3s;
@@ -181,18 +183,139 @@ body {
 }
 /* 모달창 */
 #recipeModal .modal-dialog {
+  max-width: 800px;
+  width: 80%;
+}
+#modal-instructions {
+  line-height: 200%;
+}
+/* 즐겨찾기 스타일 */
+.favorites{
+  position: relative;
+  width: 1200px;
+  height: auto;
+}
+.delete-btn {
+  font-size: 0.9rem; 
+  width: 30px; 
+  height: 30px; 
+  border: none; 
+  border-radius: 5px; 
+  background-color: #dc3545; 
+  color: white; 
+  font-weight: bold; 
+  cursor: pointer; 
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  right: 10px; 
+  transition: background-color 0.3s, transform 0.2s;
+}
+  display: flex;
+  align-items: center;
+}
+.navbar .logo i {
+  color: #ffffff;
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+.navbar .nav-link {
+  color: #ffffff !important;
+  padding: 8px 15px;
+  transition: color 0.3s, background-color 0.3s;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.navbar .nav-link.active {
+  color: #0044cc !important;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+/* 탭 메뉴 스타일 */
+.nav-tabs {
+  border-bottom: none;
+}
+.nav-tabs .nav-link {
+  color: #6c757d !important;
+  background-color: #e9ecef;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 0;
+  border: none;
+  opacity: 0.7;
+  transition: color 0.3s, background-color 0.3s;
+}
+.nav-tabs .nav-link.active {
+  color: #0044cc !important;
+  background-color: transparent;
+  border-bottom: 2px solid #0044cc;
+  opacity: 1;
+  font-weight: bold;
+}
+.ingredient-card {
+  display: inline-block;
+  background-color: #e7f1ff;
+  border: 1px solid #0044cc;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 5px;
+  position: relative;
+  font-size: 0.9rem;
+}
+.ingredient-card button {
+  background: none;
+  border: none;
+  color: #ff0000;
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0;ma
+.btn-dark {
+  background-color: #b0b0b0;
+  color: #ffffff;
+  border: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+.btn-dark:hover {
+  background-color: #000000;
+}
+.recipe-list li {
+  list-style: none;
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+.recipe-list img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+/* 모달창 */
+#recipeModal .modal-dialog {
   max-width: 800px; /* 원하는 너비로 설정 */
   width: 80%; /* 화면 너비의 80%로 설정 */
 }
 #modal-instructions {
   line-height: 200%;
 }
+>>>>
 /* footer 스타일 수정 */
 footer {
   background-color: #0044cc;
   color: #ffffff;
   padding: 15px 0;
   text-align: center;
+  margin-top: auto;
+  width: 100%; 
+  border-top: 1px solid #cccccc;
   margin-top: auto; /* footer를 항상 아래로 밀어줌 */
   width: 100%; /* 페이지 전체 폭을 차지 */
   border-top: 1px solid #cccccc; /* 상단에 경계선 추가 (선택사항) */

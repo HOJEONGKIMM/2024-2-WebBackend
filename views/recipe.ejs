@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 작성 - Recipe Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 네비게이션 바 스타일 */
+        .navbar {
+            background-color: #0044cc;
+        }
+
+        .navbar .logo {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo i {
+            color: #ffffff;
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .navbar .nav-link {
+            color: #ffffff !important;
+            padding: 8px 15px;
+            transition: color 0.3s, background-color 0.3s;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .navbar .nav-link.active {
+            color: #0044cc !important;
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+
+        /* 메인 컨테이너 스타일 */
+        .write-container {
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #0044cc;
+            box-shadow: 0 0 0 0.2rem rgba(0, 68, 204, 0.25);
+        }
+
+        /* 재료 및 조리 단계 스타일 */
+        .ingredient-item, .instruction-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .remove-btn {
+            color: #dc3545;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .remove-btn:hover {
+            color: #bd2130;
+        }
+
+        .add-btn {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: #003399;
+        }
+
+        /* 제출 버튼 스타일 */
+        .btn-primary {
+            background-color: #0044cc;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #003399;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            background-color: #0044cc;
+            color: #ffffff;
+            padding: 15px 0;
+            text-align: center;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            margin: 0 10px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #cccccc;
+        }
+
+        .footer-icons a {
+            color: #ffffff;
+            margin: 0 8px;
+            font-size: 1rem;
+        }
+
+        /* 알림 메시지 스타일 */
+        .popup-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: fadeInOut 3s;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); }
+        }
+    </style>
+</head>
+<body class="bg-light">
+     <!-- 네비게이션 바 -->
+     <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand logo" href="#">
+                <i class="fas fa-book-open"></i>
+                Recipe Finder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Recipes' ? 'active' : '' %>" href="/recipes">Recipes</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'About Us' ? 'active' : '' %>" href="/about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Community' ? 'active' : '' %>" href="/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Help' ? 'active' : '' %>" href="/favorites">Favorite</a></li>
+                    <li class="nav-item"><a class="nav-link <%= activePage === 'Logout' ? 'active' : '' %>" href="/logout">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="write-container">
+        <h2 class="mb-4 text-center">새로운 레시피 작성</h2>
+        
+        <form action="/community/recipe" method="POST" id="recipeForm">
+            <!-- 기본 정보 -->
+            <div class="form-group">
+                <label for="name" class="form-label">레시피 이름</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category" class="form-label">카테고리</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">카테고리 선택</option>
+                    <option value="Korean">한식</option>
+                    <option value="Western">양식</option>
+                    <option value="Chinese">중식</option>
+                    <option value="Japanese">일식</option>
+                </select>
+            </div>
+
+            <!-- 영양 정보 -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="calories" class="form-label">칼로리 (kcal)</label>
+                        <input type="number" class="form-control" id="calories" name="calories" required min="0">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="carbohydrate" class="form-label">탄수화물 (g)</label>
+                        <input type="number" class="form-control" id="carbohydrate" name="carbohydrate" required min="0">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="protein" class="form-label">단백질 (g)</label>
+                        <input type="number" class="form-control" id="protein" name="protein" required min="0">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="fat" class="form-label">지방 (g)</label>
+                        <input type="number" class="form-control" id="fat" name="fat" required min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 재료 목록 -->
+            <div class="form-group">
+                <label class="form-label">재료</label>
+                <div id="ingredientsList">
+                    <div class="ingredient-item">
+                        <input type="text" class="form-control" name="ingredients[]" required>
+                        <button type="button" class="remove-btn" onclick="removeItem(this)">×</button>
+                    </div>
+                </div>
+                <button type="button" class="add-btn" onclick="addIngredient()">재료 추가</button>
+            </div>
+
+            <!-- 조리 방법 -->
+            <div class="form-group">
+                <label class="form-label">조리 방법</label>
+                <div id="instructionsList">
+                    <div class="instruction-item">
+                        <input type="text" class="form-control" name="instructions[]" required placeholder="1단계">
+                        <button type="button" class="remove-btn" onclick="removeItem(this)">×</button>
+                    </div>
+                </div>
+                <button type="button" class="add-btn" onclick="addInstruction()">조리 단계 추가</button>
+            </div>
+
+            <!-- 이미지 URL -->
+            <div class="form-group">
+                <label for="image" class="form-label">이미지 URL (선택사항)</label>
+                <input type="url" class="form-control" id="image" name="image">
+            </div>
+
+            <!-- 제출 버튼 -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary" onclick="submitRecipe(event)">레시피 등록</button>
+                <button type="button" class="btn btn-secondary" onclick="history.back()">취소</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 재료 추가
+        function addIngredient() {
+            const ingredientsList = document.getElementById('ingredientsList');
+            const newItem = document.createElement('div');
+            newItem.className = 'ingredient-item';
+            newItem.innerHTML = `
+                <input type="text" class="form-control" name="ingredients[]" required>
+                <button type="button" class="remove-btn" onclick="removeItem(this)">×</button>
+            `;
+            ingredientsList.appendChild(newItem);
+        }
+
+        // 조리 단계 추가
+        function addInstruction() {
+            const instructionsList = document.getElementById('instructionsList');
+            const newItem = document.createElement('div');
+            const stepNumber = instructionsList.children.length + 1;
+            newItem.className = 'instruction-item';
+            newItem.innerHTML = `
+                <input type="text" class="form-control" name="instructions[]" required placeholder="${stepNumber}단계">
+                <button type="button" class="remove-btn" onclick="removeItem(this)">×</button>
+            `;
+            instructionsList.appendChild(newItem);
+        }
+
+        // 항목 제거
+        function removeItem(button) {
+            const item = button.parentElement;
+            const list = item.parentElement;
+            if (list.children.length > 1) {
+                item.remove();
+                // 조리 단계인 경우 번호 재정렬
+                if (list.id === 'instructionsList') {
+                    Array.from(list.children).forEach((item, index) => {
+                        const input = item.querySelector('input');
+                        input.placeholder = `${index + 1}단계`;
+                    });
+                }
+            }
+        }
+        
+        //레시피 제출
+        async function submitRecipe(event) {
+            event.preventDefault(); // 기본 폼 제출 동작 방지
+            
+            try {
+                const form = document.getElementById('recipeForm');
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
+                // ingredients와 instructions 배열 처리
+                data.ingredients = Array.from(formData.getAll('ingredients[]'));
+                data.instructions = Array.from(formData.getAll('instructions[]'));
+
+                const response = await fetch('/community/recipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // 성공적으로 제출되면 community 페이지로 리다이렉션
+                    window.location.href = '/community';
+                } else {
+                    const errorData = await response.json();
+                    alert('레시피 등록 실패: ' + errorData.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('레시피 등록 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 폼 제출 전 유효성 검사
+        document.getElementById('recipeForm').onsubmit = function(e) {
+            const ingredients = document.getElementsByName('ingredients[]');
+            const instructions = document.getElementsByName('instructions[]');
+            
+            if (ingredients.length < 1) {
+                alert('최소 하나의 재료가 필요합니다.');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (instructions.length < 1) {
+                alert('최소 하나의 조리 단계가 필요합니다.');
+                e.preventDefault();
+                return false;
+            }
+            
+            return true;
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

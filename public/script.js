@@ -1,6 +1,7 @@
 let currentCategory = 'Korean'; // 초기 카테고리 설정
 let ingredients = []; // 하나의 전역 배열만 사용
 let token = '';
+let saveIngredients = [];
 
 function activateNav(element) {
     document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
@@ -88,6 +89,11 @@ async function fetchRecipes(category) {
 }
 
 function showModal(recipe) {
+    // 기존 차트가 있다면 제거
+    if (window.macroChart) {
+        window.macroChart.destroy();
+    }
+
     document.getElementById('modal-image').src = recipe.image || 'https://via.placeholder.com/80';
     document.getElementById('modal-name').innerText = recipe.name || '이름 없음';
     document.getElementById('modal-calories').innerText = recipe.calories || '정보 없음';
@@ -102,6 +108,95 @@ function showModal(recipe) {
         <li>단백질: ${protein} g</li>
         <li>지방: ${fat} g</li>
     `;
+
+    const modal = new bootstrap.Modal(document.getElementById('recipeModal'));
+    modal.show();
+    
+    document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
+
+    setTimeout(() => {
+        const ctx = document.getElementById('MacroNutrientsChart').getContext('2d');
+        window.macroChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['탄수화물', '지방', '단백질'],
+                datasets: [{
+                    data: [carbohydrate, fat, protein],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    }, 100);
+
+    new bootstrap.Modal(document.getElementById('recipeModal')).show();
+}
+
+async function fetchFavorites() {
+    try {
+        const response = await axios.get('/favorites');
+        console.log('Favorites:', response.data);
+        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
+    } catch (error) {
+        console.error('Error fetching favorites:', error.response?.data);
+        alert(error.response?.data?.message || 'Error fetching favorites');
+    }
+}
+
+
+async function addToFavorites(recipeId) {
+    try {
+        await axios.post('/favorites', { recipeId });
+        showPopup('Recipe added to favorites!');
+    } catch (error) {
+        showPopup(error.response?.data?.message || 'Error adding to favorites', true);
+    }
+}
+
+function showPopup(message, isError = false) {
+    const popup = document.createElement('div');
+    popup.className = `popup-message ${isError ? 'error' : 'success'}`;
+    popup.innerText = message;
+
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const recipeId = event.target.dataset.id;
+
+            try {
+                // 서버에 DELETE 요청 보내기
+                const response = await axios.delete(`/favorites/${recipeId}`);
+                if (response.status === 200) {
+                    // 성공적으로 삭제되면 해당 li 요소를 DOM에서 제거
+                    const li = event.target.closest('li');
+                    if (li) {
+                        li.remove();
+                    } else {
+                        console.error('삭제할 항목을 찾을 수 없습니다.');
+                    }
+                } else {
+                    console.error('삭제 실패:', response);
+                }
+            } catch (error) {
+                console.error('즐겨찾기 삭제 중 오류:', error);
+                alert('삭제 중 문제가 발생했습니다.');
+            }
+        });
+    });
     document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
 
     new bootstrap.Modal(document.getElementById('recipeModal')).show();

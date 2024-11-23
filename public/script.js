@@ -3,11 +3,13 @@ let ingredients = []; // 하나의 전역 배열만 사용
 let token = '';
 let saveIngredients = [];
 
+// 네비게이션 활성화
 function activateNav(element) {
     document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
     element.classList.add('active');
 }
 
+// Enter 키 입력 처리
 function handleKeyInput(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -15,6 +17,7 @@ function handleKeyInput(event) {
     }
 }
 
+// 재료 추가
 function addIngredients() {
     const input = document.getElementById('ingredient-input');
     const list = document.getElementById('ingredient-list');
@@ -42,10 +45,12 @@ function addIngredients() {
     console.log("현재 ingredients 배열:", ingredients); // 배열 업데이트 확인용
 }
 
+// 결과 표시
 function showResults() {
     fetchRecipes(currentCategory); // 현재 선택된 카테고리를 사용하여 검색
 }
 
+// 카테고리 변경
 function showCategory(category) {
     currentCategory = category;
     document.querySelectorAll('.nav-tabs .nav-link').forEach(link => link.classList.remove('active'));
@@ -53,6 +58,7 @@ function showCategory(category) {
     fetchRecipes(currentCategory);
 }
 
+// 레시피 데이터 가져오기
 async function fetchRecipes(category) {
     const recipeList = document.getElementById('recipe-list');
     recipeList.innerHTML = '';
@@ -88,8 +94,8 @@ async function fetchRecipes(category) {
     }
 }
 
+// 모달 표시
 function showModal(recipe) {
-    // 기존 차트가 있다면 제거
     if (window.macroChart) {
         window.macroChart.destroy();
     }
@@ -111,8 +117,6 @@ function showModal(recipe) {
 
     const modal = new bootstrap.Modal(document.getElementById('recipeModal'));
     modal.show();
-    
-    document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
 
     setTimeout(() => {
         const ctx = document.getElementById('MacroNutrientsChart').getContext('2d');
@@ -136,22 +140,20 @@ function showModal(recipe) {
             }
         });
     }, 100);
-
-    new bootstrap.Modal(document.getElementById('recipeModal')).show();
 }
 
+// 즐겨찾기 데이터 가져오기
 async function fetchFavorites() {
     try {
         const response = await axios.get('/favorites');
         console.log('Favorites:', response.data);
-        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
     } catch (error) {
         console.error('Error fetching favorites:', error.response?.data);
         alert(error.response?.data?.message || 'Error fetching favorites');
     }
 }
 
-
+// 즐겨찾기 추가
 async function addToFavorites(recipeId) {
     try {
         await axios.post('/favorites', { recipeId });
@@ -161,6 +163,7 @@ async function addToFavorites(recipeId) {
     }
 }
 
+// 팝업 메시지 표시
 function showPopup(message, isError = false) {
     const popup = document.createElement('div');
     popup.className = `popup-message ${isError ? 'error' : 'success'}`;
@@ -170,24 +173,7 @@ function showPopup(message, isError = false) {
     setTimeout(() => popup.remove(), 3000);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const inputField = document.getElementById('ingredient-input');
-    const addButton = document.getElementById('add-ingredient-btn');
-
-    if (inputField) {
-        inputField.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                addIngredients(); // 함수 호출
-            }
-        });
-    }
-
-    if (addButton) {
-        addButton.addEventListener('click', addIngredients);
-    }
-});
-
+// 삭제 버튼 이벤트
 document.addEventListener('DOMContentLoaded', () => {
     const deleteButtons = document.querySelectorAll('.delete-btn');
 
@@ -196,80 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const recipeId = event.target.dataset.id;
 
             try {
-                // 서버에 DELETE 요청 보내기
                 const response = await axios.delete(`/favorites/${recipeId}`);
                 if (response.status === 200) {
-                    // 성공적으로 삭제되면 해당 li 요소를 DOM에서 제거
                     const li = event.target.closest('li');
                     if (li) {
                         li.remove();
-                    } else {
-                        console.error('삭제할 항목을 찾을 수 없습니다.');
                     }
-                } else {
-                    console.error('삭제 실패:', response);
-                }
-            } catch (error) {
-                console.error('즐겨찾기 삭제 중 오류:', error);
-                alert('삭제 중 문제가 발생했습니다.');
-            }
-        });
-    });
-    document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
-
-    new bootstrap.Modal(document.getElementById('recipeModal')).show();
-});
-
-async function fetchFavorites() {
-    try {
-        const response = await axios.get('/favorites');
-        console.log('Favorites:', response.data);
-        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
-    } catch (error) {
-        console.error('Error fetching favorites:', error.response?.data);
-        alert(error.response?.data?.message || 'Error fetching favorites');
-    }
-}
-
-
-async function addToFavorites(recipeId) {
-    try {
-        await axios.post('/favorites', { recipeId });
-        showPopup('Recipe added to favorites!');
-    } catch (error) {
-        showPopup(error.response?.data?.message || 'Error adding to favorites', true);
-    }
-}
-
-function showPopup(message, isError = false) {
-    const popup = document.createElement('div');
-    popup.className = `popup-message ${isError ? 'error' : 'success'}`;
-    popup.innerText = message;
-
-    document.body.appendChild(popup);
-    setTimeout(() => popup.remove(), 3000);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const recipeId = event.target.dataset.id;
-
-            try {
-                // 서버에 DELETE 요청 보내기
-                const response = await axios.delete(`/favorites/${recipeId}`);
-                if (response.status === 200) {
-                    // 성공적으로 삭제되면 해당 li 요소를 DOM에서 제거
-                    const li = event.target.closest('li');
-                    if (li) {
-                        li.remove();
-                    } else {
-                        console.error('삭제할 항목을 찾을 수 없습니다.');
-                    }
-                } else {
-                    console.error('삭제 실패:', response);
                 }
             } catch (error) {
                 console.error('즐겨찾기 삭제 중 오류:', error);

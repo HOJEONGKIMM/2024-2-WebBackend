@@ -2,6 +2,7 @@ let currentCategory = 'Korean'; // 초기 카테고리 설정
 let ingredients = []; // 하나의 전역 배열만 사용
 let token = '';
 let saveIngredients = [];
+
 function activateNav(element) {
     document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
     element.classList.add('active');
@@ -108,7 +109,6 @@ function showModal(recipe) {
         <li>지방: ${fat} g</li>
     `;
 
-    // 모달 먼저 보여주기
     const modal = new bootstrap.Modal(document.getElementById('recipeModal'));
     modal.show();
     
@@ -139,6 +139,86 @@ function showModal(recipe) {
 
     new bootstrap.Modal(document.getElementById('recipeModal')).show();
 }
+
+async function fetchFavorites() {
+    try {
+        const response = await axios.get('/favorites');
+        console.log('Favorites:', response.data);
+        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
+    } catch (error) {
+        console.error('Error fetching favorites:', error.response?.data);
+        alert(error.response?.data?.message || 'Error fetching favorites');
+    }
+}
+
+
+async function addToFavorites(recipeId) {
+    try {
+        await axios.post('/favorites', { recipeId });
+        showPopup('Recipe added to favorites!');
+    } catch (error) {
+        showPopup(error.response?.data?.message || 'Error adding to favorites', true);
+    }
+}
+
+function showPopup(message, isError = false) {
+    const popup = document.createElement('div');
+    popup.className = `popup-message ${isError ? 'error' : 'success'}`;
+    popup.innerText = message;
+
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inputField = document.getElementById('ingredient-input');
+    const addButton = document.getElementById('add-ingredient-btn');
+
+    if (inputField) {
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addIngredients(); // 함수 호출
+            }
+        });
+    }
+
+    if (addButton) {
+        addButton.addEventListener('click', addIngredients);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const recipeId = event.target.dataset.id;
+
+            try {
+                // 서버에 DELETE 요청 보내기
+                const response = await axios.delete(`/favorites/${recipeId}`);
+                if (response.status === 200) {
+                    // 성공적으로 삭제되면 해당 li 요소를 DOM에서 제거
+                    const li = event.target.closest('li');
+                    if (li) {
+                        li.remove();
+                    } else {
+                        console.error('삭제할 항목을 찾을 수 없습니다.');
+                    }
+                } else {
+                    console.error('삭제 실패:', response);
+                }
+            } catch (error) {
+                console.error('즐겨찾기 삭제 중 오류:', error);
+                alert('삭제 중 문제가 발생했습니다.');
+            }
+        });
+    });
+    document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
+
+    new bootstrap.Modal(document.getElementById('recipeModal')).show();
+});
 
 async function fetchFavorites() {
     try {

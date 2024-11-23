@@ -2,6 +2,7 @@ let currentCategory = 'Korean'; // 초기 카테고리 설정
 let ingredients = []; // 하나의 전역 배열만 사용
 let token = '';
 let saveIngredients = [];
+
 function activateNav(element) {
     document.querySelectorAll('.navbar .nav-link').forEach(link => link.classList.remove('active'));
     element.classList.add('active');
@@ -108,7 +109,6 @@ function showModal(recipe) {
         <li>지방: ${fat} g</li>
     `;
 
-    // 모달 먼저 보여주기
     const modal = new bootstrap.Modal(document.getElementById('recipeModal'));
     modal.show();
     
@@ -197,4 +197,52 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
+
+    new bootstrap.Modal(document.getElementById('recipeModal')).show();
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+        await axios.post('/login', { username, password }); // 서버가 쿠키에 토큰을 설정
+        alert('Logged in successfully!');
+        window.location.href = '/recipes'; // 로그인 후 페이지 이동
+    } catch (error) {
+        alert(error.response?.data?.message || 'Log In Error');
+    }
 });
+
+
+async function fetchFavorites() {
+    try {
+        const response = await axios.get('/favorites');
+        console.log('Favorites:', response.data);
+        // 여기에 즐겨찾기 데이터를 렌더링하는 로직 추가
+    } catch (error) {
+        console.error('Error fetching favorites:', error.response?.data);
+        alert(error.response?.data?.message || 'Error fetching favorites');
+    }
+}
+
+
+async function addToFavorites(recipeId) {
+    try {
+        await axios.post('/favorites', { recipeId });
+        showPopup('Recipe added to favorites!');
+    } catch (error) {
+        showPopup(error.response?.data?.message || 'Error adding to favorites', true);
+    }
+}
+
+function showPopup(message, isError = false) {
+    const popup = document.createElement('div');
+    popup.className = `popup-message ${isError ? 'error' : 'success'}`;
+    popup.innerText = message;
+
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 3000);
+}

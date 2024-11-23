@@ -65,28 +65,28 @@
     <!-- 모달 창 -->
     <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="modal-name"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <img id="modal-image" src="" alt="" class="img-fluid mb-3">
-            <p> <span id="modal-calories"></span> kcal</p>
-            <p><strong>재료</strong> <br><span id="modal-ingredients"></span></p>
-            <ul id="modal-nutrients"></ul>
-            <p><strong>조리 과정</strong> <br><span id="modal-instructions"></span></p>
-            </div>
-            <div class="modal-piegraph">
-                <p><strong>  영양 정보</strong> <br><span id="modal-piegraph"></span></p>
-                <div style="height: 200px;">  <!-- 차트 컨테이너에 높이 지정 -->
-                    <canvas id="MacroNutrientsChart"></canvas>
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="modal-name"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <img id="modal-image" src="" alt="" class="img-fluid mb-3">
+                <p> <span id="modal-calories"></span> kcal</p>
+                <p><strong>재료</strong> <br><span id="modal-ingredients"></span></p>
+                <ul id="modal-nutrients"></ul>
+                <p><strong>조리 과정</strong> <br><span id="modal-instructions"></span></p>
+                </div>
+                <div class="modal-piegraph">
+                    <p><strong>  영양 정보</strong> <br><span id="modal-piegraph"></span></p>
+                    <div style="height: 200px;"> 
+                        <canvas id="MacroNutrientsChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"onclick="window.location.href='/recipes'">Close</button>
-            </div>
-        </div>
         </div>
     </div>  
 

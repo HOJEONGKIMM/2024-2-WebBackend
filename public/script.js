@@ -171,6 +171,24 @@ function showPopup(message, isError = false) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const inputField = document.getElementById('ingredient-input');
+    const addButton = document.getElementById('add-ingredient-btn');
+
+    if (inputField) {
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addIngredients(); // 함수 호출
+            }
+        });
+    }
+
+    if (addButton) {
+        addButton.addEventListener('click', addIngredients);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     const deleteButtons = document.querySelectorAll('.delete-btn');
 
     deleteButtons.forEach(button => {
@@ -200,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modal-instructions').innerText = recipe.instructions ? recipe.instructions.join('\n') : '조리법 정보 없음';
 
     new bootstrap.Modal(document.getElementById('recipeModal')).show();
-}
+});
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
